@@ -1,0 +1,19 @@
+---
+- name: My First Playbook
+  hosts: localhost
+  connection: local
+
+  tasks:
+    - name: Print a message
+      debug:
+        msg: "Playbook is working!"
+
+    - name: Create a test file
+      file:
+        path: ~/test_file.txt
+        state: touch
+
+    - name: Write text into the file
+      copy:
+        content: "Hello from Ansible!"
+        dest: ~/test_file.txt
