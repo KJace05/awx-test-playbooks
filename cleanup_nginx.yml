@@ -4,17 +4,34 @@
   connection: local
   gather_facts: false
 
+  vars:
+    kubeconfig_path: "{{ playbook_dir }}/kind-kubeconfig.txt"
+
   tasks:
     - name: Delete nginx deployment
-      shell: kubectl delete deployment nginx-deployment --context kind-my-cluster
+      kubernetes.core.k8s:
+        state: absent
+        kubeconfig: "{{ kubeconfig_path }}"
+        validate_certs: false
+        definition:
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: nginx-deployment
+            namespace: default
 
     - name: Verify deployment is gone
-      shell: kubectl get deployments --context kind-my-cluster
-      register: deploy_output
+      kubernetes.core.k8s_info:
+        kind: Deployment
+        name: nginx-deployment
+        namespace: default
+        kubeconfig: "{{ kubeconfig_path }}"
+        validate_certs: false
+      register: deploy_info
 
     - name: Show remaining deployments
       debug:
-        msg: "{{ deploy_output.stdout }}"
+        msg: "Deployments remaining: {{ deploy_info.resources | length }}"
 
     - name: Cleanup complete
       debug:
