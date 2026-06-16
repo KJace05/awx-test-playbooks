@@ -4,10 +4,14 @@
   connection: local
   gather_facts: false
 
+  vars:
+    kubeconfig_path: "{{ playbook_dir }}/kind-kubeconfig.txt"
+
   tasks:
     - name: Create nginx deployment
       kubernetes.core.k8s:
         state: present
+        kubeconfig: "{{ kubeconfig_path }}"
         definition:
           apiVersion: apps/v1
           kind: Deployment
@@ -29,14 +33,13 @@
                   image: nginx:latest
                   ports:
                   - containerPort: 80
-        kubeconfig: /home/kesteves/kind-kubeconfig.txt
 
     - name: Verify deployment
       kubernetes.core.k8s_info:
         kind: Deployment
         name: nginx-deployment
         namespace: default
-        kubeconfig: /home/kesteves/kind-kubeconfig.txt
+        kubeconfig: "{{ kubeconfig_path }}"
       register: deploy_info
 
     - name: Show deployment status
