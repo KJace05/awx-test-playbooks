@@ -41,7 +41,7 @@
         name: nginx-deployment
         namespace: default
         kubeconfig: "{{ kubeconfig_path }}"
-        validate_certs: false      
+        validate_certs: false
        register: deploy_info
 
     - name: Show deployment status
