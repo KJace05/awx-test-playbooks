@@ -1,4 +1,3 @@
-cat > ~/playbooks/deploy_nginx.yml << 'EOF'
 ---
 - name: Deploy Nginx to Kind Cluster
   hosts: localhost
