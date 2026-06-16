@@ -16,7 +16,7 @@
     - name: Fail if home directory missing
       fail:
         msg: "Home directory does not exist!"
-      when: home_dir.stat.exists == false
+      when: home_dir.stat.exists == true
 
     - name: Check available disk space
       shell: df -h / | awk 'NR==2 {print $4}'
