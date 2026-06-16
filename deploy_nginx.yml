@@ -47,4 +47,3 @@
     - name: Show deployment status
       debug:
         msg: "Nginx deployment has {{ deploy_info.resources[0].spec.replicas }} replicas"
-EOF
