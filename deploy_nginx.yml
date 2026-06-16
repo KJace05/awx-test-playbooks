@@ -6,42 +6,39 @@
 
   tasks:
     - name: Create nginx deployment
-      shell: |
-        kubectl apply -f - --context kind-my-cluster <<EOF
-        apiVersion: apps/v1
-        kind: Deployment
-        metadata:
-          name: nginx-deployment
-          namespace: default
-        spec:
-          replicas: 2
-          selector:
-            matchLabels:
-              app: nginx
-          template:
-            metadata:
-              labels:
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: nginx-deployment
+            namespace: default
+          spec:
+            replicas: 2
+            selector:
+              matchLabels:
                 app: nginx
-            spec:
-              containers:
-              - name: nginx
-                image: nginx:latest
-                ports:
-                - containerPort: 80
-        EOF
+            template:
+              metadata:
+                labels:
+                  app: nginx
+              spec:
+                containers:
+                - name: nginx
+                  image: nginx:latest
+                  ports:
+                  - containerPort: 80
+        kubeconfig: /home/kesteves/kind-kubeconfig.txt
 
-    - name: Wait for deployment to be ready
-      shell: kubectl rollout status deployment/nginx-deployment --context kind-my-cluster
-      register: rollout_status
+    - name: Verify deployment
+      kubernetes.core.k8s_info:
+        kind: Deployment
+        name: nginx-deployment
+        namespace: default
+        kubeconfig: /home/kesteves/kind-kubeconfig.txt
+      register: deploy_info
 
     - name: Show deployment status
       debug:
-        msg: "{{ rollout_status.stdout }}"
-
-    - name: Verify pods are running
-      shell: kubectl get pods --context kind-my-cluster -l app=nginx
-      register: pods_output
-
-    - name: Show running pods
-      debug:
-        msg: "{{ pods_output.stdout }}"
+        msg: "Nginx deployment has {{ deploy_info.resources[0].spec.replicas }} replicas"
