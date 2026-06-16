@@ -1,0 +1,21 @@
+---
+- name: Remove Nginx from Kind Cluster
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: Delete nginx deployment
+      shell: kubectl delete deployment nginx-deployment --context kind-my-cluster
+
+    - name: Verify deployment is gone
+      shell: kubectl get deployments --context kind-my-cluster
+      register: deploy_output
+
+    - name: Show remaining deployments
+      debug:
+        msg: "{{ deploy_output.stdout }}"
+
+    - name: Cleanup complete
+      debug:
+        msg: "Nginx has been removed from the Kind cluster"
