@@ -1,0 +1,31 @@
+---
+- name: Environment Validation
+  hosts: localhost
+  connection: local
+
+  tasks:
+    - name: Check WSL2 is the environment
+      debug:
+        msg: "Running on {{ ansible_system }} - {{ ansible_kernel }}"
+
+    - name: Verify home directory exists
+      stat:
+        path: "{{ ansible_env.HOME }}"
+      register: home_dir
+
+    - name: Fail if home directory missing
+      fail:
+        msg: "Home directory does not exist!"
+      when: home_dir.stat.exists == false
+
+    - name: Check available disk space
+      shell: df -h / | awk 'NR==2 {print $4}'
+      register: disk_output
+
+    - name: Show disk space
+      debug:
+        msg: "Free disk space on /: {{ disk_output.stdout }}"
+
+    - name: All checks passed
+      debug:
+        msg: "Environment validation complete. System is ready."

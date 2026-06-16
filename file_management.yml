@@ -1,0 +1,35 @@
+---
+- name: File and Directory Management
+  hosts: localhost
+  connection: local
+
+  tasks:
+    - name: Create a project directory
+      file:
+        path: ~/awx_lab/configs
+        state: directory
+        mode: '0755'
+
+    - name: Create a log directory
+      file:
+        path: ~/awx_lab/logs
+        state: directory
+        mode: '0755'
+
+    - name: Write a config file
+      copy:
+        content: |
+          # AWX Lab Config
+          environment: development
+          version: 1.0
+          author: {{ ansible_user_id }}
+        dest: ~/awx_lab/configs/app.conf
+
+    - name: Write a log entry
+      copy:
+        content: "Lab executed successfully on {{ ansible_date_time.date }}"
+        dest: ~/awx_lab/logs/lab.log
+
+    - name: Confirm files exist
+      debug:
+        msg: "Config and log files created in ~/awx_lab"

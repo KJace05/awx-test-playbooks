@@ -1,0 +1,29 @@
+---
+- name: System Info Report
+  hosts: localhost
+  connection: local
+  gather_facts: true
+  tasks:
+    - name: Print OS information
+      debug:
+        msg: "OS: {{ ansible_facts['distribution'] }} {{ ansible_facts['distribution_version'] }}"
+
+    - name: Print hostname
+      debug:
+        msg: "Hostname: {{ ansible_facts['hostname'] }}"
+
+    - name: Print total memory
+      shell: free -m | awk '/Mem:/ {print $2}'
+      register: memory_output
+
+    - name: Show memory
+      debug:
+        msg: "Total Memory: {{ memory_output.stdout }} MB"
+
+    - name: Print CPU count
+      shell: nproc
+      register: cpu_output
+
+    - name: Show CPU count
+      debug:
+        msg: "CPU Cores: {{ cpu_output.stdout }}"
