@@ -2,6 +2,10 @@
   debug:
     msg: "Deploying to {{ env_name }} environment with {{ replicas }} replicas"
 
+- name: Set replica count as integer
+  set_fact:
+    replica_count: "{{ replicas | int }}"
+
 - name: Create nginx deployment
   kubernetes.core.k8s:
     state: present
@@ -14,7 +18,7 @@
         name: "{{ deployment_name }}"
         namespace: "{{ namespace }}"
       spec:
-        replicas: "{{ replicas | int }}"
+        replicas: "{{ replica_count }}"
         selector:
           matchLabels:
             app: nginx
