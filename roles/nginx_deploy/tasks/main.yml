@@ -1,0 +1,40 @@
+---
+- name: Create nginx deployment
+  kubernetes.core.k8s:
+    state: present
+    kubeconfig: "{{ kubeconfig_path }}"
+    validate_certs: false
+    definition:
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: "{{ deployment_name }}"
+        namespace: "{{ namespace }}"
+      spec:
+        replicas: "{{ replicas }}"
+        selector:
+          matchLabels:
+            app: nginx
+        template:
+          metadata:
+            labels:
+              app: nginx
+          spec:
+            containers:
+            - name: nginx
+              image: "{{ nginx_image }}"
+              ports:
+              - containerPort: 80
+
+- name: Verify deployment
+  kubernetes.core.k8s_info:
+    kind: Deployment
+    name: "{{ deployment_name }}"
+    namespace: "{{ namespace }}"
+    kubeconfig: "{{ kubeconfig_path }}"
+    validate_certs: false
+  register: deploy_info
+
+- name: Show deployment status
+  debug:
+    msg: "{{ deployment_name }} has {{ deploy_info.resources[0].spec.replicas }} replicas"
