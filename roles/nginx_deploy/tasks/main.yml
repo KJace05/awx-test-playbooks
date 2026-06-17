@@ -31,7 +31,7 @@
         name: "{{ deployment_name }}"
         namespace: "{{ namespace }}"
       spec:
-        replicas: "{{ replica_count }}"
+        replicas: "{{ replica_count | int }}"
         selector:
           matchLabels:
             app: nginx
