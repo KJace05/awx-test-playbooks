@@ -6,6 +6,19 @@
   set_fact:
     replica_count: "{{ replicas | int }}"
 
+- name: Delete existing deployment if present
+  kubernetes.core.k8s:
+    state: absent
+    kubeconfig: "{{ kubeconfig_path }}"
+    validate_certs: false
+    definition:
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: "{{ deployment_name }}"
+        namespace: "{{ namespace }}"
+  ignore_errors: true
+
 - name: Create nginx deployment
   kubernetes.core.k8s:
     state: present
