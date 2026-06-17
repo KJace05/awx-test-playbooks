@@ -31,7 +31,7 @@
         name: "{{ deployment_name }}"
         namespace: "{{ namespace }}"
       spec:
-        replicas: "{{ replica_count | int }}"
+        replicas: 2
         selector:
           matchLabels:
             app: nginx
@@ -45,6 +45,16 @@
               image: "{{ nginx_image }}"
               ports:
               - containerPort: 80
+
+- name: Scale deployment to desired replicas
+  kubernetes.core.k8s_scale:
+    api_version: apps/v1
+    kind: Deployment
+    name: "{{ deployment_name }}"
+    namespace: "{{ namespace }}"
+    kubeconfig: "{{ kubeconfig_path }}"
+    validate_certs: false
+    replicas: "{{ replicas | int }}"
 
 - name: Verify deployment
   kubernetes.core.k8s_info:
