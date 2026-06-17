@@ -1,4 +1,7 @@
----
+- name: Show deployment environment
+  debug:
+    msg: "Deploying to {{ env_name }} environment with {{ replicas }} replicas"
+
 - name: Create nginx deployment
   kubernetes.core.k8s:
     state: present
@@ -11,7 +14,7 @@
         name: "{{ deployment_name }}"
         namespace: "{{ namespace }}"
       spec:
-        replicas: "{{ replicas }}"
+        replicas: "{{ replicas | int }}"
         selector:
           matchLabels:
             app: nginx

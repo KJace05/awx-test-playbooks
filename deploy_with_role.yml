@@ -4,5 +4,8 @@
   connection: local
   gather_facts: false
 
+  vars:
+    ansible_connection: local
+
   roles:
     - nginx_deploy
