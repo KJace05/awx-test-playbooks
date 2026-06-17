@@ -1,0 +1,8 @@
+---
+- name: Cleanup Nginx Using Role
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  roles:
+    - nginx_deploy

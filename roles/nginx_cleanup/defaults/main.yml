@@ -1,0 +1,6 @@
+---
+deployment_name: nginx-deployment
+namespace: default
+replicas: 2
+nginx_image: nginx:latest
+kubeconfig_path: "{{ playbook_dir }}/kind-kubeconfig.txt"
